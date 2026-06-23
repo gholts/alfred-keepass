@@ -19,7 +19,7 @@ This Alfred workflow allows you to quickly search and copy passwords from your K
 
 or if you prefer building the app on your own. See Contribution for more detail.
 
-3. Fill out the configuration with your KeePassXC database file path, master password, and key file(not yet supported).
+3. Fill out the configuration with your KeePassXC database file path, master password and/or key file.
 
 <img width="1100" alt="installation" src="https://user-images.githubusercontent.com/4987502/218407644-7069c96a-7c63-4b94-8385-2c30e3bf45c0.png">
 
@@ -39,7 +39,7 @@ Alternatively you can also copy `username` and `URL` by holding CMD or ALT befor
 
 ## Limitation
 
-* Currently `master password` encrypted .kdbx is supported. Not much tested yet.
+* Master password, key file, and master password + key file encrypted .kdbx files are supported. Not much tested yet.
 
 ## Requirements
 

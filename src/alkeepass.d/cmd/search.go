@@ -31,42 +31,46 @@ var getCmd = &cobra.Command{
 }
 
 func searchMain(cmd *cobra.Command, args []string) {
-	kbdxpath := os.Getenv("keepassxc_db_path")
-	keyfilepath := os.Getenv("keepassxc_keyfile_path")
-	passwd := strings.TrimSpace(os.Getenv("keepassxc_master_password"))
-
-	var cred *gokeepasslib.DBCredentials
-
-	if passwd != "" {
-		if keyfilepath != "" {
-			// password and keyfile
-			cred, _ = gokeepasslib.NewPasswordAndKeyCredentials(passwd, keyfilepath)
-		} else {
-			// password only
-			cred = gokeepasslib.NewPasswordCredentials(passwd)
-		}
-	} else {
-		if keyfilepath != "" {
-			// keyfile only
-			cred, _ = gokeepasslib.NewKeyCredentials(keyfilepath)
-		} else {
-			// all blank
-			panic("Your must either configure `keepassxc_master_password` or `keepassxc_keyfile_path`")
-		}
+	cred, err := credentialsFromEnv()
+	if err != nil {
+		printError(err)
+		return
 	}
 
-	alf := search(kbdxpath, cred, args)
-	s, _ := json.Marshal(alf)
-	fmt.Println(string(s))
+	alf, err := searchResult(databasePathFromEnv(), cred, args)
+	if err != nil {
+		printError(err)
+		return
+	}
+	printJSON(alf)
 }
 
 func search(kbdxpath string, cred *gokeepasslib.DBCredentials, query []string) *AlfredJSON {
-	file, _ := os.Open(kbdxpath)
+	alf, err := searchResult(kbdxpath, cred, query)
+	if err != nil {
+		panic(err)
+	}
+	return alf
+}
+
+func searchResult(kbdxpath string, cred *gokeepasslib.DBCredentials, query []string) (*AlfredJSON, error) {
+	if useKeepassXCCLI() {
+		return searchWithCLI(kbdxpath, query)
+	}
+
+	file, err := openDatabase(kbdxpath)
+	if err != nil {
+		return nil, err
+	}
 	defer file.Close()
 
 	db, err := openKbdx(file, cred)
 	if err != nil {
-		panic(err)
+		alf, cliErr := searchWithCLI(kbdxpath, query)
+		if cliErr != nil {
+			return nil, fmt.Errorf("Go decoder failed: %v; keepassxc-cli fallback failed: %w", err, cliErr)
+		}
+		return alf, nil
 	}
 
 	root := db.Content.Root
@@ -75,40 +79,42 @@ func search(kbdxpath string, cred *gokeepasslib.DBCredentials, query []string) *
 	alf := readEntries(result, query)              // search
 	alf.Variables.Query = strings.Join(query, " ")
 
-	return alf
+	return alf, nil
 }
 
 func getMain(cmd *cobra.Command, args []string) {
-	kbdxpath := os.Getenv("keepassxc_db_path")
-	keyfilepath := os.Getenv("keepassxc_keyfile_path")
-	passwd := strings.TrimSpace(os.Getenv("keepassxc_master_password"))
-
-	var cred *gokeepasslib.DBCredentials
-
-	if passwd != "" {
-		if keyfilepath != "" {
-			// password and keyfile
-			cred, _ = gokeepasslib.NewPasswordAndKeyCredentials(passwd, keyfilepath)
-		} else {
-			// password only
-			cred = gokeepasslib.NewPasswordCredentials(passwd)
-		}
-	} else {
-		if keyfilepath != "" {
-			// keyfile only
-			cred, _ = gokeepasslib.NewKeyCredentials(keyfilepath)
-		} else {
-			// all blank
-			panic("Your must either configure `keepassxc_master_password` or `keepassxc_keyfile_path`")
-		}
+	cred, err := credentialsFromEnv()
+	if err != nil {
+		printError(err)
+		return
 	}
 
-	file, _ := os.Open(kbdxpath)
+	if useKeepassXCCLI() {
+		alf, err := getWithCLI(databasePathFromEnv(), args)
+		if err != nil {
+			printError(err)
+			return
+		}
+		printJSON(alf)
+		return
+	}
+
+	file, err := openDatabase(databasePathFromEnv())
+	if err != nil {
+		printError(err)
+		return
+	}
 	defer file.Close()
 
 	db, err := openKbdx(file, cred)
 	if err != nil {
-		panic(err)
+		alf, cliErr := getWithCLI(databasePathFromEnv(), args)
+		if cliErr != nil {
+			printError(fmt.Errorf("Go decoder failed: %v; keepassxc-cli fallback failed: %w", err, cliErr))
+			return
+		}
+		printJSON(alf)
+		return
 	}
 
 	path := args[0]
@@ -209,6 +215,27 @@ func getMain(cmd *cobra.Command, args []string) {
 
 	s, _ := json.Marshal(alf)
 	fmt.Println(string(s))
+}
+
+func useKeepassXCCLI() bool {
+	return os.Getenv("alkeepass_use_keepassxc_cli") == "1"
+}
+
+func printJSON(alf *AlfredJSON) {
+	s, _ := json.Marshal(alf)
+	fmt.Println(string(s))
+}
+
+func printError(err error) {
+	valid := false
+	printJSON(&AlfredJSON{
+		Items: []AlfredJSONItem{{
+			Uid:      "error",
+			Title:    "KeePass error",
+			Subtitle: err.Error(),
+			Valid:    &valid,
+		}},
+	})
 }
 
 // readEntries scans all entries in []KPEntry for filtered result

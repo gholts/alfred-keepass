@@ -21,6 +21,7 @@ type AlfredJSONItem struct {
 	Title    string `json:"title"`
 	Arg      string `json:"arg"`
 	Subtitle string `json:"subtitle,omitempty"`
+	Valid    *bool  `json:"valid,omitempty"`
 	//Icon string `json:"icon"`
 	Mods      AlfredMods        `json:"mods"`
 	Variables map[string]string `json:"variables,omitempty"`

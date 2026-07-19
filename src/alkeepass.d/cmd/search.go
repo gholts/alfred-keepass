@@ -129,14 +129,14 @@ func getMain(cmd *cobra.Command, args []string) {
 	}
 	alf.Items = append(alf.Items, AlfredJSONItem{
 		Uid:      "0",
-		Title:    "← Back",
+		Title:    "Back",
 		Subtitle: "Back to search",
 		Arg:      "back",
 	})
 	if entry.Entry.GetContent("UserName") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "2",
-			Title:    "👤 UserName",
+			Title:    "UserName",
 			Subtitle: entry.Entry.GetContent("UserName"),
 			Arg:      "username",
 		})
@@ -144,7 +144,7 @@ func getMain(cmd *cobra.Command, args []string) {
 	if entry.Entry.GetContent("Password") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "3",
-			Title:    "*️⃣ Password",
+			Title:    "Password",
 			Subtitle: "*****",
 			Arg:      "password",
 		})
@@ -152,7 +152,7 @@ func getMain(cmd *cobra.Command, args []string) {
 	if entry.Entry.GetContent("URL") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "4",
-			Title:    "🌏 URL",
+			Title:    "URL",
 			Subtitle: entry.Entry.GetContent("URL"),
 			Arg:      "url",
 		})
@@ -160,7 +160,7 @@ func getMain(cmd *cobra.Command, args []string) {
 	if entry.Entry.GetContent("Notes") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "5",
-			Title:    "📄 Notes",
+			Title:    "Notes",
 			Subtitle: entry.Entry.GetContent("Notes"),
 			Arg:      "notes",
 		})
@@ -168,13 +168,13 @@ func getMain(cmd *cobra.Command, args []string) {
 	if entry.Entry.GetContent("otp") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "6",
-			Title:    "🔐 TOTP",
+			Title:    "TOTP",
 			Subtitle: "Generate TOTP token",
 			Arg:      "otp",
 		})
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "7",
-			Title:    "🔐#️⃣ TOTP+Password",
+			Title:    "TOTP+Password",
 			Subtitle: "Generate TOTP token + Password combined",
 			Arg:      "otppass",
 		})
@@ -196,7 +196,7 @@ func getMain(cmd *cobra.Command, args []string) {
 		default:
 			alf.Items = append(alf.Items, AlfredJSONItem{
 				Uid:      strconv.Itoa(i + 6),
-				Title:    "☁️ " + item.Key,
+				Title:    item.Key,
 				Subtitle: entry.Entry.GetContent(item.Key),
 				Arg:      item.Key,
 			})
@@ -206,7 +206,7 @@ func getMain(cmd *cobra.Command, args []string) {
 	for i, item := range entry.Entry.Binaries {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:       strconv.Itoa(i + 100),
-			Title:     fmt.Sprintf("📁 Attached File (%d)", i+1),
+			Title:     fmt.Sprintf("Attached File (%d)", i+1),
 			Subtitle:  item.Name,
 			Arg:       "_file",
 			Variables: map[string]string{"filename": item.Name},
@@ -284,7 +284,7 @@ func readEntries(kpe []KPEntry, query []string) *AlfredJSON {
 		if entry.Entry.Times.Expires.Bool &&
 			entry.Entry.Times.ExpiryTime != nil &&
 			entry.Entry.Times.ExpiryTime.Time.Before(time.Now()) {
-			item.Title = "🚫(Expired) " + item.Title
+			item.Title = "(Expired) " + item.Title
 		}
 
 		if entry.Entry.GetContent("UserName") != "" {

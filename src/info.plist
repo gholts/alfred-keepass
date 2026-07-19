@@ -7,7 +7,18 @@
 	<key>connections</key>
 	<dict>
 		<key>03C52792-311C-4DBC-BC07-60BBD02AD330</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F77492FA-3C53-4DD6-981E-20C6E7F7FAE0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>0439D588-D780-4261-B62C-044F3F87014F</key>
 		<array>
 			<dict>
@@ -322,6 +333,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>E745386E-68B1-43FB-ACE7-912986530B60</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F77492FA-3C53-4DD6-981E-20C6E7F7FAE0</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>EEC7BC47-9C07-413B-8865-D8FE31217D39</key>
 		<array>
 			<dict>
@@ -343,7 +367,7 @@
 				<key>modifiers</key>
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
-				<string>🗯️ Copy others...</string>
+				<string>Copy others...</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -363,7 +387,7 @@
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>👤 Copy Username</string>
+				<string>Copy Username</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -373,7 +397,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>🌏 Copy URL</string>
+				<string>Copy URL</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -383,7 +407,7 @@
 				<key>modifiers</key>
 				<integer>1572864</integer>
 				<key>modifiersubtext</key>
-				<string>📄 Copy Notes</string>
+				<string>Copy Notes</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -393,14 +417,14 @@
 				<key>modifiers</key>
 				<integer>655360</integer>
 				<key>modifiersubtext</key>
-				<string>🖥️ Open URL</string>
+				<string>Open URL</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string>mikyk10</string>
+	<string>mikyk10, Gholts</string>
 	<key>description</key>
 	<string>Quickly find Keepass entries and copy their attributes.</string>
 	<key>disabled</key>
@@ -458,7 +482,12 @@ if [ -z "$keepassxc_master_password" ]; then
     password_args=(--no-password)
 fi
 
-printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" clip -b --totp "${key_args[@]}" "${password_args[@]}" "$db_path" "$q"</string>
+value=$(printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" show --totp "${key_args[@]}" "${password_args[@]}" "$db_path" "$q")
+result=$?
+if [ "$result" -ne 0 ]; then
+    exit "$result"
+fi
+printf '%s' "$value"</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -843,7 +872,12 @@ if [ -z "$keepassxc_master_password" ]; then
     password_args=(--no-password)
 fi
 
-printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" clip -b -a "$ATTR" "${key_args[@]}" "${password_args[@]}" "$db_path" "$q" 0</string>
+value=$(printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" show -s -a "$ATTR" "${key_args[@]}" "${password_args[@]}" "$db_path" "$q")
+result=$?
+if [ "$result" -ne 0 ]; then
+    exit "$result"
+fi
+printf '%s' "$value"</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -894,7 +928,7 @@ printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" clip -b -a "$
 				<key>subtext</key>
 				<string>Find .kdbx entry by {keywords}...</string>
 				<key>title</key>
-				<string>🔍 Find KeePass Entry</string>
+				<string>Find KeePass Entry</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -1028,7 +1062,7 @@ printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" clip -b -a "$
 				<key>subtext</key>
 				<string>Show usage</string>
 				<key>text</key>
-				<string>❓Help</string>
+				<string>Help</string>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -1113,7 +1147,7 @@ printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" show -a "$ATT
 				<key>subtext</key>
 				<string>Open the project page on github.</string>
 				<key>text</key>
-				<string>💳 About</string>
+				<string>About</string>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -1236,7 +1270,7 @@ printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" show -a "$ATT
 				<key>subtext</key>
 				<string>Check for updates for the workflow</string>
 				<key>text</key>
-				<string>🆕 Check for updates</string>
+				<string>Check for updates</string>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -1257,18 +1291,29 @@ printf '%s\n' "$keepassxc_master_password" | "$keepassxc_cli_path" show -a "$ATT
 				<key>script</key>
 				<string># Get the latest release version 
 # avoid using `jq`; it does not come with macOS out of the box
-v=$(curl https://api.github.com/repos/mikyk10/alfred-keepass/releases/latest | grep '"tag_name": ' | grep -Eo 'v\d+\.\d+\.\d+'); v=${v#v}
+v=$(curl https://api.github.com/repos/mikyk10/alfred-keepass/releases/latest | grep '"tag_name": ' | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+'); v=${v#v}
 
 latest=$v
 current=$alfred_workflow_version
 
-if [[ "ok" == "$(echo | awk "(${latest} &gt; ${current}) { print \"ok\"; }")" ]]; then
-    echo -n ${latest}
-elif [[ "ok" == "$(echo | awk "(${latest} == ${current}) { print \"ok\"; }")" ]]; then
-    echo -n "up2date"
-else
-    echo -n "ahead"
-fi</string>
+comparison=$(awk -v latest="$latest" -v current="$current" '
+function compare(a, b, a_parts, b_parts, i) {
+    split(a, a_parts, ".")
+    split(b, b_parts, ".")
+    for (i = 1; i &lt;= 3; i++) {
+        if (a_parts[i] + 0 &gt; b_parts[i] + 0) return 1
+        if (a_parts[i] + 0 &lt; b_parts[i] + 0) return -1
+    }
+    return 0
+}
+BEGIN { print compare(latest, current) }
+')
+
+case "$comparison" in
+    1) printf '%s' "$latest" ;;
+    0) printf '%s' "up2date" ;;
+    *) printf '%s' "ahead" ;;
+esac</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1667,7 +1712,7 @@ Alternatively you can also copy `username` and `URL` by holding CMD or ALT befor
 		<string>Alfred KeePass Workflow</string>
 	</dict>
 	<key>version</key>
-	<string>0.1.2-10-g726a8d4-cli4</string>
+	<string>0.1.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/mikyk10/alfred-keepass</string>
 </dict>

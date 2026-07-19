@@ -79,24 +79,24 @@ func getWithCLI(kbdxpath string, args []string) (*AlfredJSON, error) {
 	alf := AlfredJSON{}
 	alf.Items = append(alf.Items, AlfredJSONItem{
 		Uid:      "0",
-		Title:    "← Back",
+		Title:    "Back",
 		Subtitle: "Back to search",
 		Arg:      "back",
 	})
-	addCLIFieldItem(&alf, entry, "2", "👤 UserName", "UserName", "username", false)
-	addCLIFieldItem(&alf, entry, "3", "*️⃣ Password", "Password", "password", true)
-	addCLIFieldItem(&alf, entry, "4", "🌏 URL", "URL", "url", false)
-	addCLIFieldItem(&alf, entry, "5", "📄 Notes", "Notes", "notes", false)
+	addCLIFieldItem(&alf, entry, "2", "UserName", "UserName", "username", false)
+	addCLIFieldItem(&alf, entry, "3", "Password", "Password", "password", true)
+	addCLIFieldItem(&alf, entry, "4", "URL", "URL", "url", false)
+	addCLIFieldItem(&alf, entry, "5", "Notes", "Notes", "notes", false)
 	if entry.content("otp") != "" {
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "6",
-			Title:    "🔐 TOTP",
+			Title:    "TOTP",
 			Subtitle: "Generate TOTP token",
 			Arg:      "otp",
 		})
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      "7",
-			Title:    "🔐#️⃣ TOTP+Password",
+			Title:    "TOTP+Password",
 			Subtitle: "Generate TOTP token + Password combined",
 			Arg:      "otppass",
 		})
@@ -110,7 +110,7 @@ func getWithCLI(kbdxpath string, args []string) (*AlfredJSON, error) {
 		}
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:      fmt.Sprintf("%d", uid),
-			Title:    "☁️ " + item.Key,
+			Title:    item.Key,
 			Subtitle: item.Value.Content,
 			Arg:      item.Key,
 		})
@@ -123,7 +123,7 @@ func getWithCLI(kbdxpath string, args []string) (*AlfredJSON, error) {
 		}
 		alf.Items = append(alf.Items, AlfredJSONItem{
 			Uid:       fmt.Sprintf("%d", i+100),
-			Title:     fmt.Sprintf("📁 Attached File (%d)", i+1),
+			Title:     fmt.Sprintf("Attached File (%d)", i+1),
 			Subtitle:  item.Key,
 			Arg:       "_file",
 			Variables: map[string]string{"filename": item.Key},
@@ -283,7 +283,7 @@ func readCLIEntries(entries []cliEntry, query []string) *AlfredJSON {
 			Arg: path,
 		}
 		if entry.expired() {
-			item.Title = "🚫(Expired) " + item.Title
+			item.Title = "(Expired) " + item.Title
 		}
 		if entry.content("UserName") != "" {
 			item.Mods.Cmd.Valid = true
